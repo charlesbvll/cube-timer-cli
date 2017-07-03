@@ -9,7 +9,7 @@ Rubik's Cube Timer (command line interface)
 
 	git clone 'https://github.com/Toory/cube-timer-cli'
 	cd cube-timer-cli
-	git clone 'https://github.com/euphwes/pyTwistyScrambler'  # Download pyTwistyScrambler
+	svn export https://github.com/euphwes/pyTwistyScrambler/trunk/pyTwistyScrambler  # Download pyTwistyScrambler
 	pip install -r requirements.txt #Download all dependencies needed
 	sudo python cubetimer.py
 	
