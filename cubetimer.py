@@ -297,9 +297,10 @@ def main():
 						times,timestamps = GetStats(configValues,cube)
 						scramble = GetScramble(cube)
 						flag = input("[press ctrl+c to go back] Press Enter to start, Spacebar to stop...\n")
-						print("[press esc to exit the timer, Spacebar to stop]\n")
 						if configValues["inspectiontime"] != 0:
+							print("[press esc to exit the inspection timer, Enter to stop]\n")
 							inspection(configValues["inspectiontime"])
+						print("[press esc to exit the timer, Spacebar to stop]\n")
 						solve_time = Timer()
 						#if timer was not stopped by user
 						if solve_time != None:
