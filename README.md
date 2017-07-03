@@ -53,5 +53,11 @@ After starting the timer you can:
 
 All your solves will be saved in 'times.csv'.
 
+## Credits
+
+   [pyTwistyScrambler](https://github.com/euphwes/pyTwistyScrambler),
+   [reddit.com/user/Storbod](https://github.com/Storbod/Python-Cube-Timer),
+   [reddit.com/user/yovliporat](https://www.reddit.com/user/yovliporat)
+
 
 	
