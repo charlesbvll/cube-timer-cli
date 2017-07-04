@@ -27,14 +27,14 @@ def getConfig():
 	
 	return configValues
 
-def writeTime(time,scramble):
-	with open("times.csv", "a", newline="") as times:
+def writeTime(time,scramble,cube):
+	with open("{}_times.csv".format(cube), "a", newline="") as times:
 		writer = csv.writer(times)
 		writer.writerow([time , datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') , scramble])
 
-def readTimes():
+def readTimes(cube):
 	times, timestamps = [], []
-	with open("times.csv", newline = "") as saveFile:
+	with open("{}_times.csv".format(cube), newline = "") as saveFile:
 		reader = csv.reader(saveFile, delimiter=",")
 		for row in reader:
 			times.append(row[0])
@@ -73,6 +73,35 @@ def Timer():
 	print("\n")
 	solve_time = (minutes * 60000 + seconds * 1000 + millis) / 1000
 	return solve_time
+
+def inspection(insptime):
+	time.sleep(0.1)
+	secs = int(insptime)
+	"""starts at 900 milliseconds instead of 1000 because of the sleep
+	needed to avoid conflict when pressing the 'enter' key"""
+	millis = 900
+
+	while secs:
+		sys.stdout.write("\r{}::{}".format(secs,millis))
+		#timeformat = '{:02d}:{:03d}'.format(secs, millis)
+		#print(timeformat, end='\r')
+		millis -= 10
+
+		if (millis % 500) != 0:		
+			time.sleep(0.01)
+
+		#make a beep sound at 8 and 12 seconds
+		if secs == 7 and millis == 0 or secs == 3 and millis == 0:
+			print ("\a", end='')
+		if millis <= 0:
+			secs -= 1
+			millis = 1000
+		if keyboard.is_pressed('enter'):
+			break 
+		if keyboard.is_pressed('esc'):
+			return
+	sys.stdout.write("\r00::000")
+	print('\nStart Solving!\n')
 	
 def newBest():
 	print("""
@@ -87,6 +116,9 @@ def newBest():
 def stats(times, timestamps, configValues):
 	timeslen = len(times)
 
+	print("------------------------------")
+	print("------------TIMER-------------")
+	print("------------------------------")
 	if configValues["solves"] == "True":
 		print("\tSolves: " + str(timeslen))
 		print("------------------------------")
@@ -183,39 +215,41 @@ def stats(times, timestamps, configValues):
 		if configValues["latest"] == "True":
 			print("Latest: \t" + str(times[-1]))
 
-def ChooseCube(cube):
+def ChooseCube(cube,dictionary):
 	if cube == "":
-		cube = input("Choose cube type:\n2x2 (2),3x3 (3),4x4 (4),5x5 (5),6x6 (6),7x7 (7),Pyraminx (p),Square-1 (s1),Skewb (s),Clock (c)\n>> ")
+		cube = input("Choose cube type:\n2x2 (2),3x3 (3),One Handed (oh),Blind (b),4x4 (4),5x5 (5),6x6 (6),7x7 (7),Pyraminx (p),Square-1 (s1),Skewb (s),Clock (c)\n>> ")
+		cube = dictionary[cube]
+		
 	return cube
 
 def GetScramble(cube):
 	if cube == "":
 		ChooseCube()
 
-	if cube == "2x2" or cube == "2":
+	if cube == "222":   
 		scramble = scrambler222.get_WCA_scramble() 
-	elif cube == "3x3" or cube == "3":
+	elif cube == "333" or cube == "onehanded" or cube == "blindfolded":	
 		scramble = scrambler333.get_WCA_scramble()
-	elif cube == "4x4" or cube == "4":
+	elif cube == "444":	
 		scramble = scrambler444.get_WCA_scramble(n=40)
-	elif cube == "5x5" or cube == "5":
+	elif cube == "555":	
 		scramble = scrambler555.get_WCA_scramble(n=60)
-	elif cube == "6x6" or cube == "6":
+	elif cube == "666":
 		scramble = scrambler666.get_WCA_scramble(n=80)
-	elif cube == "7x7" or cube == "7":
+	elif cube == "777":
 		scramble = scrambler777.get_WCA_scramble(n=100)
-	elif cube == "Pyraminx" or cube == "p":
+	elif cube == "pyraminx":
 		scramble = pyraminxScrambler.get_WCA_scramble()
-	elif cube == "Square-1" or cube == "s1":
+	elif cube == "square1":
 		scramble = squareOneScrambler.get_WCA_scramble()
-	elif cube == "Skewb" or cube == "s":
+	elif cube == "skewb":
 		scramble = skewbScrambler.get_WCA_scramble()
-	elif cube == "Clock" or cube == "c":
+	elif cube == "clock":
 		scramble = clockScrambler.get_WCA_scramble()
 	else:
 		print("Didn't recognize input, assuming 3x3 ..")
 		scramble = scrambler333.get_WCA_scramble()
-	
+
 	print("\n" + scramble + "\n")
 	return scramble
 
@@ -229,23 +263,28 @@ def PrintAoX(times):
 	except Exception as e:
 		print("Error: " + str(e))
 
-def GetStats(configValues):
+def GetStats(configValues,cube):
 	try:
+		times, timestamps = [], []
 		#if file it's not empty
-		if(os.stat("times.csv").st_size != 0):
-			times, timestamps = readTimes()
-		else:
-			times, timestamps = [], []
-		stats(times, timestamps, configValues)
+		if(os.stat("{}_times.csv".format(cube)).st_size != 0):
+			times, timestamps = readTimes(cube)
 	except IndexError:
 		print("Error, no recorded solves.")
 	except FileNotFoundError:
-		print("Error, file \"times.csv\" not found.")
+		print("File \"{}_times.csv\" not found, creating new one".format(cube))
+		file = open('myfile.dat', 'w+')
 	except Exception as e:
 		print("Error: " + str(e))
+
+	stats(times, timestamps, configValues)
 	return times,timestamps
 
 def main():
+	dictionary = {"2":"222" , "3":"333","oh":"onehanded",
+				  "b":"blindfolded" , "4":"444" , "5":"555",
+				  "6":"666" , "7":"777" , "p":"pyraminx" ,
+				  "s1":"square1" , "s":"skewb" , "c":"clock"}
 	cube = ""
 	choose = 0
 	configValues = getConfig()
@@ -253,16 +292,20 @@ def main():
 		print("------------------------------")
 		print("--------CUBE TIMER CLI--------")
 		print("------------------------------")
-		times,timestamps = GetStats(configValues)
 		try:
 			print("------------------------------")
 			choose = input("1.Timer.\n2.Print last solves.\n3.Exit.\n>> ")
 			if choose == '1':
 				while True:
 					try:
-						cube = ChooseCube(cube)
+						cube = ChooseCube(cube,dictionary)
+						times,timestamps = GetStats(configValues,cube)
 						scramble = GetScramble(cube)
-						flag = input("[press ctrl+c to go back] Press Enter to start, Spacebar to stop...\n")
+						print("[press ctrl+c to go back] Press Enter to start\n")
+						keyboard.wait('enter')
+						if configValues["inspectiontime"] != 0:
+							print("[press esc to exit the inspection timer, Enter start solving]")
+							inspection(configValues["inspectiontime"])
 						print("[press esc to exit the timer, Spacebar to stop]\n")
 						solve_time = Timer()
 						#if timer was not stopped by user
@@ -274,8 +317,7 @@ def main():
 							else:
 								if solve_time < min(times):
 									newBest()
-							writeTime(solve_time,scramble)
-							times,timestamps = GetStats(configValues)
+							writeTime(solve_time,scramble,cube)
 						else:
 							print("\nExiting timer...")
 					except KeyboardInterrupt:
