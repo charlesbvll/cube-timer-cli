@@ -75,9 +75,11 @@ def Timer():
 	return solve_time
 
 def inspection(insptime):
-	secs = int(insptime)
-	millis = 1000
 	time.sleep(0.1)
+	secs = int(insptime)
+	"""starts at 900 milliseconds instead of 1000 because of the sleep
+	needed to avoid conflict when pressing the 'enter' key"""
+	millis = 900
 
 	while secs:
 		sys.stdout.write("\r{}::{}".format(secs,millis))
@@ -88,14 +90,17 @@ def inspection(insptime):
 		if (millis % 500) != 0:		
 			time.sleep(0.01)
 
+		#make a beep sound at 8 and 12 seconds
+		if secs == 7 and millis == 0 or secs == 3 and millis == 0:
+			print ("\a", end='')
 		if millis <= 0:
 			secs -= 1
 			millis = 1000
-
 		if keyboard.is_pressed('enter'):
 			break 
 		if keyboard.is_pressed('esc'):
 			return
+	sys.stdout.write("\r00::000")
 	print('\nStart Solving!\n')
 	
 def newBest():
@@ -296,9 +301,10 @@ def main():
 						cube = ChooseCube(cube,dictionary)
 						times,timestamps = GetStats(configValues,cube)
 						scramble = GetScramble(cube)
-						flag = input("[press ctrl+c to go back] Press Enter to start, Spacebar to stop...\n")
+						print("[press ctrl+c to go back] Press Enter to start\n")
+						keyboard.wait('enter')
 						if configValues["inspectiontime"] != 0:
-							print("[press esc to exit the inspection timer, Enter to stop]\n")
+							print("[press esc to exit the inspection timer, Enter start solving]")
 							inspection(configValues["inspectiontime"])
 						print("[press esc to exit the timer, Spacebar to stop]\n")
 						solve_time = Timer()
