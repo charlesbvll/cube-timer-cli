@@ -43,15 +43,23 @@ until you go back to the main menu (ctrl+c) or exit the program.
 After the scramble is generated you can:
 
     Start the Timer by pressing Enter
+    Start the Inspection (if it's enabled in the config.ini file) by pressing Enter
     Go back to the main menu by pressing ctrl+c
+    
+If Inspection is Enabled the timer will start the countdown, you can:
+
+    Stop the countdown and Start Solving by pressing Enter
+    Stop the Timer without registering the solve by pressing Esc
+    Go back to the main menu by pressing ctrl+c
+    
 
 After starting the timer you can:
 
     Stop the Timer by pressing Spacebar
     Stop the Timer without registering the solve by pressing Esc
-	
+    Go back to the main menu by pressing ctrl+c
 
-All your solves will be saved in 'times.csv'.
+All your solves will be saved in 'cubename_times.csv' (one file per every cube type).
 
 ## Credits
 
