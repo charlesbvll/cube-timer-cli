@@ -83,8 +83,6 @@ def inspection(insptime):
 
 	while secs:
 		sys.stdout.write("\r{}::{}".format(secs,millis))
-		#timeformat = '{:02d}:{:03d}'.format(secs, millis)
-		#print(timeformat, end='\r')
 		millis -= 10
 
 		if (millis % 500) != 0:		
@@ -100,7 +98,6 @@ def inspection(insptime):
 			break 
 		if keyboard.is_pressed('esc'):
 			return
-	sys.stdout.write("\r00::000")
 	print('\nStart Solving!\n')
 	
 def newBest():
@@ -112,6 +109,53 @@ def newBest():
  | |\  | | |____     \  /\  /      | |_) | | |____   ____) |    | |    |_|
  |_| \_| |______|     \/  \/       |____/  |______| |_____/     |_|    (_)
 	""")
+
+def GetBest(num,times,timeslen):
+	index=0
+	Best = 1000.00
+	for index in range(index,timeslen-(num-2)):
+		lastTimes = times[index:index+num-1]
+		if num == 5 or num == 12:
+			lastTimes.pop(lastTimes.index(max(lastTimes)))
+			lastTimes.pop(lastTimes.index(min(lastTimes)))
+		elif num == 50:
+			for i in range(0,3):
+				lastTimes.pop(lastTimes.index(max(lastTimes)))
+				lastTimes.pop(lastTimes.index(min(lastTimes)))
+		elif num == 100:
+			for i in range(0,5):
+				lastTimes.pop(lastTimes.index(max(lastTimes)))
+				lastTimes.pop(lastTimes.index(min(lastTimes)))
+		elif num == 1000:
+			for i in range(0,50):
+				lastTimes.pop(lastTimes.index(max(lastTimes)))
+				lastTimes.pop(lastTimes.index(min(lastTimes)))
+		sumLastTimes = sum(lastTimes)
+		CurrentBest = round(sumLastTimes / len(lastTimes), 3)
+		if(CurrentBest < Best):
+			Best = CurrentBest
+	print("\tAo{}: \t{:.2f}".format(num,Best))
+
+def GetCurrent(num,times,timeslen):
+	lastTimes = times[-num:]
+	if num == 5 or num == 12:
+		lastTimes.pop(lastTimes.index(max(lastTimes)))
+		lastTimes.pop(lastTimes.index(min(lastTimes)))
+	elif num == 50:
+		for i in range(0,3):
+			lastTimes.pop(lastTimes.index(max(lastTimes)))
+			lastTimes.pop(lastTimes.index(min(lastTimes)))
+	elif num == 100:
+		for i in range(0,5):
+			lastTimes.pop(lastTimes.index(max(lastTimes)))
+			lastTimes.pop(lastTimes.index(min(lastTimes)))
+	elif num == 1000:
+		for i in range(0,50):
+			lastTimes.pop(lastTimes.index(max(lastTimes)))
+			lastTimes.pop(lastTimes.index(min(lastTimes)))
+	sumLastTimes = sum(lastTimes)
+	CurrentBest = round(sumLastTimes / len(lastTimes), 3)
+	print("Ao{}: \t{:.2f}".format(num,CurrentBest), end="")
 
 def stats(times, timestamps, configValues):
 	timeslen = len(times)
@@ -141,50 +185,36 @@ def stats(times, timestamps, configValues):
 				print("Sub-{}:   {}\t[{}%]".format(str(key), str(val), str(float(val) / float(len(times)) * 100.0)[:5]))
 			print("------------------------------")
 	
-	
+	print("  Current\t    Best\n" + "------------------------------")
 	if timeslen >= 3:
 		if configValues["ao3"] == "True":
-			last3Times = times[-3:]
-			sumLast3Times = sum(last3Times)
-			print("Ao3: \t\t" + str(round(sumLast3Times / len(last3Times), 3)))
-		
+			GetCurrent(3,times,timeslen)
+			GetBest(3,times,timeslen)
 		if timeslen >= 5:
 			if configValues["ao5"] == "True": 
-				last5Times = times[-5:]
-				sumLast5Times = sum(last5Times)
-				print("Ao5: \t\t" + str(round(sumLast5Times / len(last5Times), 3)))
-				
+				GetCurrent(5,times,timeslen)
+				GetBest(5,times,timeslen)
 			if timeslen >= 12:
 				if configValues["ao12"] == "True":
-					last12Times = times[-12:]
-					last12Times.pop(last12Times.index(max(last12Times)))
-					last12Times.pop(last12Times.index(min(last12Times)))
-					sumLast12Times = sum(last12Times)
-					print("Ao12: \t\t" + str(round(sumLast12Times / len(last12Times), 3)))
-				
+					GetCurrent(12,times,timeslen)
+					GetBest(12,times,timeslen)
 				if timeslen >= 50:
 					if configValues["ao50"] == "True":
-						last50Times = times[-50:]
-						sumLast50Times = sum(last50Times)
-						print("Ao50: \t\t" + str(round(sumLast50Times / len(last50Times), 3)))
-					
+						GetCurrent(50,times,timeslen)
+						GetBest(50,times,timeslen)
 					if timeslen >= 100:
 						if configValues["ao100"] == "True":
-							last100Times = times[-100:]
-							sumLast100Times = sum(last100Times)
-							print("Ao100: \t\t" + str(round(sumLast100Times / len(last100Times), 3)))
-						
+							GetCurrent(100,times,timeslen)
+							GetBest(100,times,timeslen)
 						if timeslen >= 1000:
 							if configValues["ao1000"] == "True":
-								last1000Times = times[-1000:]
-								sumLast1000Times = sum(last1000Times)
-								print("Average: \t" + str(round(totalTime / len(times), 3)))
-				
+								GetCurrent(1000,times,timeslen)
+								GetBest(1000,times,timeslen)
+	print("------------------------------")
 	if timeslen >= 2:
-		if configValues["average"] == "True":
+		if configValues["mean"] == "True":
 			totalTime = sum(times)
-			print("Average: \t" + str(round(totalTime / len(times), 3)))
-			
+			print("Mean: \t{:.2f}".format(round(totalTime / len(times), 3)))
 
 		if configValues["median"] == "True":
 			sortedTimes = sorted(times)
@@ -192,34 +222,44 @@ def stats(times, timestamps, configValues):
 				median = round(sortedTimes[ceil(len(sortedTimes) / 2)], 3)
 			else:
 				median = round((sortedTimes[floor(len(sortedTimes) / 2)] + sortedTimes[ceil(len(sortedTimes) / 2)]) / 2, 3)
+			print("Median: \t{:.2f}".format(median))
 
-			print("Median: \t" + str(median))
-		
-		
 		if configValues["standarddeviation"] == "True":
 			average = sum(times) / len(times)
 			deviations = [(x - average) ** 2 for x in times]
 			variance = sum(deviations) / len(deviations)
 			standardDeviation = sqrt(variance)
-			print("SD: \t\t" + str(round(standardDeviation, 3)))
+			print("SD: \t{:.2f}".format(round(standardDeviation, 3)))
 	
 	if timeslen >= 1:
 		if configValues["best"] == "True":
-			print("Best: \t\t" + str(min(times)))
+			print("Best: \t{:.2f}".format(min(times)))
 			
-		
 		if configValues["worst"] == "True":
-			print("Worst: \t\t" + str(max(times)))
-		
+			print("Worst: \t{:.2f}".format(max(times)))
 		
 		if configValues["latest"] == "True":
-			print("Latest: \t" + str(times[-1]))
+			print("Last: \t{:.2f}".format(times[-1]))
 
 def ChooseCube(cube,dictionary):
 	if cube == "":
-		cube = input("Choose cube type:\n2x2 (2),3x3 (3),One Handed (oh),Blind (b),4x4 (4),5x5 (5),6x6 (6),7x7 (7),Pyraminx (p),Square-1 (s1),Skewb (s),Clock (c)\n>> ")
+		print(
+		'Choose cube type:\n',\
+		'(1). One Handed\n',\
+		'(2). 2x2\n',\
+		'(3). 3x3\n',\
+		'(4). 4x4\n',\
+		'(5). 5x5\n',\
+		'(6). 6x6\n',\
+		'(7). 7x7\n',\
+		'(b). Blind\n',\
+		'(p). Pyraminx\n',\
+		'(s1). Square-1\n',\
+		'(s). Skewb\n',\
+		'(c). Clock\n',\
+		'(ctrl+c). Back to menu')
+		cube = input(">>")
 		cube = dictionary[cube]
-		
 	return cube
 
 def GetScramble(cube):
@@ -281,12 +321,11 @@ def GetStats(configValues,cube):
 	return times,timestamps
 
 def main():
-	dictionary = {"2":"222" , "3":"333","oh":"onehanded",
+	dictionary = {"1":"onehanded" , "2":"222" , "3":"333",
 				  "b":"blindfolded" , "4":"444" , "5":"555",
 				  "6":"666" , "7":"777" , "p":"pyraminx" ,
 				  "s1":"square1" , "s":"skewb" , "c":"clock"}
 	cube = ""
-	choose = 0
 	configValues = getConfig()
 	while True:
 		print("------------------------------")
@@ -303,7 +342,7 @@ def main():
 						scramble = GetScramble(cube)
 						print("[press ctrl+c to go back] Press Enter to start\n")
 						keyboard.wait('enter')
-						if configValues["inspectiontime"] != 0:
+						if configValues["inspectiontime"] != '0':
 							print("[press esc to exit the inspection timer, Enter start solving]")
 							inspection(configValues["inspectiontime"])
 						print("[press esc to exit the timer, Spacebar to stop]\n")
