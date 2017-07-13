@@ -34,7 +34,19 @@ In the file config.ini you can change each stat value to True/False (True = show
 #### Timer:
 
 	Choose cube type:
-	2x2 (2),3x3 (3),4x4 (4),5x5 (5),6x6 (6),7x7 (7),Pyraminx (p),Square-1 (s1),Skewb (s),Clock (c)
+	 (1). One Handed
+	 (2). 2x2
+	 (3). 3x3
+	 (4). 4x4
+	 (5). 5x5
+	 (6). 6x6
+	 (7). 7x7
+	 (b). Blind
+	 (p). Pyraminx
+	 (s1). Square-1
+	 (s). Skewb
+	 (c). Clock
+	 (ctrl+c). Back to menu
 
 You can choose the cube by inputting the number (or letter) on the parentheses.
 This will be asked only on the first solve, after that the script will generate the scramble for the same cube,
