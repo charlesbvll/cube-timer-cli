@@ -21,15 +21,19 @@ In the file config.ini you can change each stat value to True/False (True = show
 
 #### Main Menu:
 
-	1.Timer.
-	2.Print last solves.
-	3.Exit.
+     1. Timer.
+     2. Print last solves.
+     3. Import from Twisty Timer
+     4. Exit.
+
 
 1 - Go to the timer
 
 2 - Print saved solves
 
-3 - Exit the program
+3 - Import from a Twisty Timer backup file (android app)
+
+4 - Exit the program
 
 #### Timer:
 
