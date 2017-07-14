@@ -10,7 +10,7 @@ Credits:
 from pyTwistyScrambler import scrambler222, scrambler333, scrambler444,\
 	scrambler555, scrambler666, scrambler777, squareOneScrambler, \
 	pyraminxScrambler, skewbScrambler, clockScrambler
-import datetime,time
+import datetime,time,fileinput
 from collections import OrderedDict
 from math import ceil, floor, sqrt
 import csv
@@ -258,7 +258,7 @@ def ChooseCube(cube,dictionary):
 		'(s). Skewb\n',\
 		'(c). Clock\n',\
 		'(ctrl+c). Back to menu')
-		cube = input(">>")
+		cube = input(">> ")
 		cube = dictionary[cube]
 	return cube
 
@@ -298,7 +298,7 @@ def PrintAoX(times):
 		avg = int(input("Choose how many solves to show: \n>> "))
 		last = times[-avg:]
 		for time in last:
-			print(str(time))
+			print("{:.2f}".format(time))
 		input("Press Enter to continue...")
 	except Exception as e:
 		print("Error: " + str(e))
@@ -320,10 +320,26 @@ def GetStats(configValues,cube):
 	stats(times, timestamps, configValues)
 	return times,timestamps
 
+def ImportFromTwisty(dictionary):
+	Filein = input("Input filename of twisty timer backup.\n>> ")
+	with open(Filein, "r", newline="") as times:
+		for line in times:
+			cube = line.split('"')
+			cubetype = str(*cube[1:2])
+			for key,value in dictionary.items():
+				if cubetype == value:
+					cube[-1] = cube[-1].strip()
+					solve = float(*cube[5:6]) / 1000
+					epoch = int(*cube[7:8]) / 1000
+					scramble = str(*cube[9:10])
+					solve_time = datetime.datetime.fromtimestamp(epoch).strftime('%Y-%m-%d %H:%M:%S')
+					file = open("{}_times.csv".format(cubetype),"a", newline="")
+					print("{},{},{}".format(solve,solve_time,scramble), file=file)
+
 def main():
 	dictionary = {"1":"onehanded" , "2":"222" , "3":"333",
 				  "b":"blindfolded" , "4":"444" , "5":"555",
-				  "6":"666" , "7":"777" , "p":"pyraminx" ,
+				  "6":"666" , "7":"777" , "p":"pyra" ,
 				  "s1":"square1" , "s":"skewb" , "c":"clock"}
 	cube = ""
 	configValues = getConfig()
@@ -333,7 +349,12 @@ def main():
 		print("------------------------------")
 		try:
 			print("------------------------------")
-			choose = input("1.Timer.\n2.Print last solves.\n3.Exit.\n>> ")
+			print(
+				' 1. Timer.\n',
+				'2. Print last solves.\n',
+				'3. Import from Twisty Timer\n',
+				'4. Exit.')
+			choose = input(">> ")
 			if choose == '1':
 				while True:
 					try:
@@ -366,6 +387,8 @@ def main():
 			elif choose == '2':
 				PrintAoX(times)
 			elif choose == '3':
+				ImportFromTwisty(dictionary)
+			elif choose == '4':
 				break
 			else:
 				print("Input was not valid.")
