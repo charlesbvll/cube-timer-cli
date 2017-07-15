@@ -134,7 +134,7 @@ def GetBest(num,times,timeslen):
 		CurrentBest = round(sumLastTimes / len(lastTimes), 3)
 		if(CurrentBest < Best):
 			Best = CurrentBest
-	print("\tAo{}: \t{:.2f}".format(num,Best))
+	print("\tAo{:<4}: {:^5.2f}".format(num,Best))
 
 def GetCurrent(num,times,timeslen):
 	lastTimes = times[-num:]
@@ -155,7 +155,7 @@ def GetCurrent(num,times,timeslen):
 			lastTimes.pop(lastTimes.index(min(lastTimes)))
 	sumLastTimes = sum(lastTimes)
 	CurrentBest = round(sumLastTimes / len(lastTimes), 3)
-	print("Ao{}: \t{:.2f}".format(num,CurrentBest), end="")
+	print("Ao{:<4}: {:^5.2f}".format(num,CurrentBest), end="")
 
 def stats(times, timestamps, configValues):
 	timeslen = len(times)
@@ -182,7 +182,7 @@ def stats(times, timestamps, configValues):
 						dictonary[key] += 1
 				
 			for key, val in dictonary.items():
-				print("Sub-{}:   {}\t[{}%]".format(str(key), str(val), str(float(val) / float(len(times)) * 100.0)[:5]))
+				print("Sub-{:^5}:{:^5}[{:^5}%]".format(str(key), str(val), str(float(val) / float(len(times)) * 100.0)[:5]))
 			print("------------------------------")
 	
 	print("  Current\t    Best\n" + "------------------------------")
@@ -214,7 +214,7 @@ def stats(times, timestamps, configValues):
 	if timeslen >= 2:
 		if configValues["mean"] == "True":
 			totalTime = sum(times)
-			print("Mean: \t{:.2f}".format(round(totalTime / len(times), 3)))
+			print("{:8}{:6.2f}".format('Mean:',round(totalTime / len(times), 3)))
 
 		if configValues["median"] == "True":
 			sortedTimes = sorted(times)
@@ -222,24 +222,24 @@ def stats(times, timestamps, configValues):
 				median = round(sortedTimes[ceil(len(sortedTimes) / 2)], 3)
 			else:
 				median = round((sortedTimes[floor(len(sortedTimes) / 2)] + sortedTimes[ceil(len(sortedTimes) / 2)]) / 2, 3)
-			print("Median: \t{:.2f}".format(median))
+			print("{:8}{:6.2f}".format('Median:',median))
 
 		if configValues["standarddeviation"] == "True":
 			average = sum(times) / len(times)
 			deviations = [(x - average) ** 2 for x in times]
 			variance = sum(deviations) / len(deviations)
 			standardDeviation = sqrt(variance)
-			print("SD: \t{:.2f}".format(round(standardDeviation, 3)))
+			print("{:8}{:6.2f}".format('SD:',round(standardDeviation, 3)))
 	
 	if timeslen >= 1:
 		if configValues["best"] == "True":
-			print("Best: \t{:.2f}".format(min(times)))
+			print("{:8}{:6.2f}".format('Best:',min(times)))
 			
 		if configValues["worst"] == "True":
-			print("Worst: \t{:.2f}".format(max(times)))
+			print("{:8}{:6.2f}".format('Worst:',max(times)))
 		
 		if configValues["latest"] == "True":
-			print("Last: \t{:.2f}".format(times[-1]))
+			print("{:8}{:6.2f}".format('Last:',times[-1]))
 
 def ChooseCube(cube,dictionary):
 	if cube == "":
@@ -370,7 +370,7 @@ def main():
 						solve_time = Timer()
 						#if timer was not stopped by user
 						if solve_time != None:
-							print("\x1b[6;30;42m" + "\nTIME: " + str(solve_time) + "\x1b[0m")
+							print("\x1b[6;30;42mTIME: {:^5.2f}\x1b[0m".format(solve_time))
 							#if times is empty
 							if not times:
 								newBest()
