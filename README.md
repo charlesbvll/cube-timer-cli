@@ -11,7 +11,7 @@ Rubik's Cube Timer (command line interface)
 	cd cube-timer-cli
 	svn export https://github.com/euphwes/pyTwistyScrambler/trunk/pyTwistyScrambler  # Download pyTwistyScrambler
 	virtualenv env
-	source ./env/bin/activiate
+	source ./env/bin/activate
 	pip install -r requirements.txt #Download all dependencies needed
 	sudo python cubetimer.py
 	
