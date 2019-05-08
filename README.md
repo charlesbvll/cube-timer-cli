@@ -10,12 +10,17 @@ Rubik's Cube Timer (command line interface)
 	git clone 'https://github.com/Toory/cube-timer-cli'
 	cd cube-timer-cli
 	svn export https://github.com/euphwes/pyTwistyScrambler/trunk/pyTwistyScrambler  # Download pyTwistyScrambler
+	virtualenv env
+	source ./env/bin/activiate
 	pip install -r requirements.txt #Download all dependencies needed
 	sudo python cubetimer.py
 	
 Note that on Linux the script needs root permissions (required by the python module [keyboard](https://github.com/boppreh/keyboard))
 
-## [Usage](http://i.imgur.com/NWFjDx5.gifv)
+## Usage
+<p align="center"> 
+  <img src="https://i.imgur.com/m60wgcp.gif">
+</p>
 
 In the file config.ini you can change each stat value to True/False (True = show, False = do not show)  
 
