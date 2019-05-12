@@ -26,19 +26,23 @@ In the file config.ini you can change each stat value to True/False (True = show
 
 #### Main Menu:
 
-     1. Timer.
-     2. Print last solves.
-     3. Import from Twisty Timer
-     4. Exit.
+    1. Timer.
+    2. Print last solves.
+    3. Delete all solves of a cube
+    4. Import from Twisty Timer
+    5. Exit.
+
 
 
 1 - Go to the timer
 
 2 - Print saved solves
 
-3 - Import from a Twisty Timer backup file (android app)
+3 - Delete all solves of a specific cube
 
-4 - Exit the program
+4 - Import from a Twisty Timer backup file (android app)
+
+5 - Exit the program
 
 #### Timer:
 
