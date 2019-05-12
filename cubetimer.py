@@ -45,11 +45,11 @@ def readTimes(cube):
 
 def Timer():
 	minutes = 0
-	millis = 0
 	seconds = 0
+	millis = 0
 
 	while True:
-		sys.stdout.write("\r{minutes}::{seconds}::{millis}".format(minutes=minutes, seconds=seconds, millis=millis))
+		sys.stdout.write(f"\r{minutes}::{seconds}::{millis}")
 		sys.stdout.flush()
 		millis += 10
 
@@ -67,6 +67,7 @@ def Timer():
 		#if spacebar is pressed stop timer
 		if keyboard.is_pressed(' '):
 			break 
+		#if esc is pressed exit timer
 		if keyboard.is_pressed('esc'):
 			return
 
@@ -160,12 +161,13 @@ def GetCurrent(num,times,timeslen):
 def stats(times, timestamps, configValues):
 	timeslen = len(times)
 
-	print("------------------------------")
-	print("------------TIMER-------------")
-	print("------------------------------")
+	print('\x1b[0;34m-\x1b[0m'*30)
+	print('\x1b[1;37;44m' + 'TIMER'.center(30,' ') + '\x1b[0m')
+	print('\x1b[0;34m-\x1b[0m'*30)
+
 	if configValues["solves"] == "True":
 		print("\tSolves: " + str(timeslen))
-		print("------------------------------")
+		print('\x1b[0;34m-\x1b[0m'*30)
 
 	if timeslen >= 1:
 		if configValues["subx"] == "True":
@@ -183,9 +185,9 @@ def stats(times, timestamps, configValues):
 				
 			for key, val in dictonary.items():
 				print("Sub-{:^5}:{:^5}[{:^5}%]".format(str(key), str(val), str(float(val) / float(len(times)) * 100.0)[:5]))
-			print("------------------------------")
+			print('\x1b[0;34m-\x1b[0m'*30)
 	
-	print("  Current\t    Best\n" + "------------------------------")
+	print("  Current\t    Best\n" + '\x1b[0;34m-\x1b[0m'*30)
 	if timeslen >= 3:
 		if configValues["ao3"] == "True":
 			GetCurrent(3,times,timeslen)
@@ -210,7 +212,7 @@ def stats(times, timestamps, configValues):
 							if configValues["ao1000"] == "True":
 								GetCurrent(1000,times,timeslen)
 								GetBest(1000,times,timeslen)
-	print("------------------------------")
+	print('\x1b[0;34m-\x1b[0m'*30)
 	if timeslen >= 2:
 		if configValues["mean"] == "True":
 			totalTime = sum(times)
@@ -293,15 +295,22 @@ def GetScramble(cube):
 	print("\n" + scramble + "\n")
 	return scramble
 
-def PrintAoX(times):
+def PrintAoX(times,timestamps):
 	try:
-		avg = int(input("Choose how many solves to show: \n>> "))
-		last = times[-avg:]
-		for time in last:
-			print("{:.2f}".format(time))
+		if not times:
+			#if the there are no recorded solves
+			raise ValueError("No recorded solves.")
+		lastTimes = times[-20:]
+		lastTimestamps = timestamps[-20:]
+		for i in range(20):
+			if i >= len(lastTimes):
+				break
+			print(f"{lastTimestamps[i]} {lastTimes[i]:.2f} ")
 		input("Press Enter to continue...")
+	except IndexError:
+		print("Error, index no recorded solves.")
 	except Exception as e:
-		print("Error: " + str(e))
+		print("\x1b[0;31mError: \x1b[0m" + str(e))
 
 def GetStats(configValues,cube):
 	try:
@@ -313,11 +322,10 @@ def GetStats(configValues,cube):
 		print("Error, no recorded solves.")
 	except FileNotFoundError:
 		print("File \"{}_times.csv\" not found, creating new one".format(cube))
-		file = open('myfile.dat', 'w+')
+		file = open(f"{cube}_times.csv", 'w+')
 	except Exception as e:
-		print("Error: " + str(e))
+		print("\x1b[0;31mError: \x1b[0m" + str(e))
 
-	stats(times, timestamps, configValues)
 	return times,timestamps
 
 def ImportFromTwisty(dictionary):
@@ -336,6 +344,24 @@ def ImportFromTwisty(dictionary):
 					file = open("{}_times.csv".format(cubetype),"a", newline="")
 					print("{},{},{}".format(solve,solve_time,scramble), file=file)
 
+def deleteSolves(cube):
+	'''
+	Deletes 
+	'''
+	with open(f'{cube}_times.csv', 'w') as f:
+		f.write('')
+	print(f'\x1b[0;32mAll solves from {cube} were deleted!\x1b[0m')
+
+def deleteLastSolve(cube):
+	#read content of file line by line
+	with open(f'{cube}_times.csv', 'r') as fin:
+		lines = fin.readlines()
+		f.close()
+	#write all lines except last line (last solve)
+	with open(f'{cube}_times.csv', 'w') as fout:
+		fout.writelines([line for line in lines[-1]])
+		fout.close()
+
 def main():
 	dictionary = {"1":"onehanded" , "2":"222" , "3":"333",
 				  "b":"blindfolded" , "4":"444" , "5":"555",
@@ -344,29 +370,25 @@ def main():
 	cube = ""
 	configValues = getConfig()
 	while True:
-		print("------------------------------")
-		print("--------CUBE TIMER CLI--------")
-		print("------------------------------")
+		print('\x1b[0;35m-\x1b[0m'*30)
+		print('\x1b[1;37;45m' + 'CUBE TIMER CLI'.center(30,' ') + '\x1b[0m')
+		print('\x1b[0;35m-\x1b[0m'*30)
 		try:
-			print("------------------------------")
-			print(
-				' 1. Timer.\n',
-				'2. Print last solves.\n',
-				'3. Import from Twisty Timer\n',
-				'4. Exit.')
+			print(f'1. Timer.\n2. Print last solves.\n3. Delete all solves of a cube\n4. Import from Twisty Timer\n5. Exit.\n'+'\x1b[0;35m-\x1b[0m'*30)
 			choose = input(">> ")
 			if choose == '1':
 				while True:
 					try:
 						cube = ChooseCube(cube,dictionary)
 						times,timestamps = GetStats(configValues,cube)
+						stats(times, timestamps, configValues)
 						scramble = GetScramble(cube)
-						print("[press ctrl+c to go back] Press Enter to start\n")
+						print("[Press ctrl+c to Main Menu]\nPress Enter to start\n")
 						keyboard.wait('enter')
 						if configValues["inspectiontime"] != '0':
 							print("[press esc to exit the inspection timer, Enter start solving]")
 							inspection(configValues["inspectiontime"])
-						print("[press esc to exit the timer, Spacebar to stop]\n")
+						print("[Press ctrl+c to go Main Menu]\n[press esc to exit the timer]\nSpacebar to stop]")
 						solve_time = Timer()
 						#if timer was not stopped by user
 						if solve_time != None:
@@ -381,18 +403,22 @@ def main():
 						else:
 							print("\nExiting timer...")
 					except KeyboardInterrupt:
-						print("Exiting")
+						print("\nExiting")
 						break
-				cube = ""
 			elif choose == '2':
-				PrintAoX(times)
+				cube = ChooseCube(cube,dictionary)
+				times,timestamps = GetStats(configValues,cube)
+				PrintAoX(times,timestamps)
 			elif choose == '3':
-				ImportFromTwisty(dictionary)
+				cube = ChooseCube(cube,dictionary)
+				deleteSolves(cube)
 			elif choose == '4':
+				ImportFromTwisty(dictionary)
+			elif choose == '5':
 				break
 			else:
 				print("Input was not valid.")
-				choose = 0
+			cube = ''
 		except Exception as e:
 			print("Error: " + str(e))
 
