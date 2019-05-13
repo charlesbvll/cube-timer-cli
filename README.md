@@ -19,7 +19,7 @@ Note that on Linux the script needs root permissions (required by the python mod
 
 ## Usage
 <p align="center"> 
-  <img src="https://i.imgur.com/m60wgcp.gif">
+  <img src="https://i.imgur.com/qa45CCR.gif">
 </p>
 
 In the file config.ini you can change each stat value to True/False (True = show, False = do not show)  
