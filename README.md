@@ -8,7 +8,7 @@ Rubik's Cube Timer (command line interface)
 ## Installation
 
 	git clone 'https://github.com/Toory/cube-timer-cli'
-	cd cube-timer-cli
+	cd cube-timer-cli/src/
 	svn export https://github.com/euphwes/pyTwistyScrambler/trunk/pyTwistyScrambler  # Download pyTwistyScrambler
 	virtualenv env
 	source ./env/bin/activate
