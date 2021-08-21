@@ -96,6 +96,8 @@ class CubeTimer():
 		self.ChooseCube()
 		with open(f'{self.cube}_times.csv', 'w') as f:
 			f.write('')
+		with open(f'{self.cube}_times.txt', 'w') as f:
+			f.write('')
 		print(f'\x1b[0;32mAll solves from {self.cube} were deleted!\x1b[0m')
 
 	def deleteLastSolve(self):
@@ -105,6 +107,13 @@ class CubeTimer():
 			f.close()
 		#write all lines except last line (last solve)
 		with open(f'{self.cube}_times.csv', 'w') as fout:
+			fout.writelines([line for line in lines[-1]])
+			fout.close()
+		#same for the text file
+		with open(f'{self.cube}_times.txt', 'r') as fin:
+			lines = fin.readlines()
+			f.close()
+		with open(f'{self.cube}_times.txt', 'w') as fout:
 			fout.writelines([line for line in lines[-1]])
 			fout.close()
 
@@ -141,6 +150,8 @@ class CubeTimer():
 		with open("{}_times.csv".format(self.cube), "a", newline="") as times:
 			writer = csv.writer(times)
 			writer.writerow([time , datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S') , scramble])
+		with open("{}_times.txt".format(self.cube), "a", newline="") as times:
+			times.write('"' + str(time) +  '"; "' + scramble + '"; "' +  datetime.datetime.now().strftime('%Y-%m-%d'+'T'+'%H:%M:%S') + '"\n')
 
 	def readTimes(self):
 		times, timestamps = [], []
