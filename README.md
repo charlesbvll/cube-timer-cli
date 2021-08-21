@@ -1,4 +1,6 @@
 # cube-timer-cli
+Fork of https://github.com/Toory/cube-timer-cli with .txt file export, to be able to import times to Twisty Timer (https://github.com/aricneto/TwistyTimer).
+
 Rubik's Cube Timer (command line interface)
 
 ## Dependencies
